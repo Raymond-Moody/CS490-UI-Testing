@@ -16,16 +16,15 @@ class HomeTest(unittest.TestCase):
         self.driver.get(SITE_URL)
         self.addCleanup(self.driver.quit)
 
-    def test_user_registeration(self):
+    def test_user_registeration_login(self):
         """
         Creates a new user
         Assertions need to be added to actual test that stuff happens correctly
         """
         home = pages.HomePage(self.driver)
         assert home.is_title_matches()
-        
+        home.click_register_button()
         # Fill out first page of registration form
-        self.driver.find_element(*HomePageLocators.REGISTER_BUTTON).click()
         self.driver.find_element(*FormLocators.TEXT_INPUT("Email Address")).send_keys("testuser@email.com")
         self.driver.find_element(*FormLocators.TEXT_INPUT("First Name")).send_keys("TestF")
         self.driver.find_element(*FormLocators.TEXT_INPUT("Last Name")).send_keys("TestL")
@@ -33,8 +32,6 @@ class HomeTest(unittest.TestCase):
         self.driver.find_element(*FormLocators.SELECT_OPTION("male")).click()
         # Wait for popup menu to go away since waiting for button to be clickable is inconsistent
         WebDriverWait(self.driver, 10).until(
-            #EC.visibility_of_element_located(FormLocators.TEXT_INPUT("Date of Birth"))
-            #EC.element_to_be_clickable(FormLocators.TEXT_INPUT("Date of Birth"))
             EC.invisibility_of_element_located((By.ID, "menu-"))
         )
         date = self.driver.find_element(*FormLocators.TEXT_INPUT("Date of Birth"))
@@ -51,8 +48,6 @@ class HomeTest(unittest.TestCase):
         self.driver.find_element(*FormLocators.SELECT_INPUT("Goal")).click()
         self.driver.find_element(*FormLocators.SELECT_OPTION("2")).click()
         WebDriverWait(self.driver, 10).until(
-            #EC.visibility_of_element_located(FormLocators.NEXT_BUTTON)
-            #EC.element_to_be_clickable(FormLocators.NEXT_BUTTON)
             EC.invisibility_of_element_located((By.ID, "menu-"))
         )
         self.driver.find_element(*FormLocators.NEXT_BUTTON).click()
@@ -60,7 +55,17 @@ class HomeTest(unittest.TestCase):
         # Select User and submit
         self.driver.find_element(By.XPATH, "//button/div[text()='Client']").click()
         self.driver.find_element(By.XPATH, "//button[text()='Submit']").click()
-        garbo = input()
+
+        WebDriverWait(self.driver, 10).until(
+            EC.invisibility_of_element_located(FormLocators.ROOT)
+        )
+        home.login("testuser@email.com", "abc123$")
+        WebDriverWait(self.driver, 10).until(
+            EC.title_contains('Dashboard')
+        )
+        dashboard = pages.Dashboard(self.driver)
+        # We reached 'FitConnect - User Dashboard' successfully -> we registered and logged in successfully
+        assert dashboard.is_title_matches()
 
     def tearDown(self):
         self.driver.quit()

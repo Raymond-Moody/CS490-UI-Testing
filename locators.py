@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 class FormLocators(object):
     CHECKBOX = (By.CSS_SELECTOR, "input[type='checkbox']")
     NEXT_BUTTON = (By.XPATH, "//button[text()='Next']")
+    ROOT = (By.CLASS_NAME, "MuiModal-root")
 
     def TEXT_INPUT(label):
         return (By.XPATH, "//label[contains(.,'{}')]/following-sibling::div[1]/input".format(label))
