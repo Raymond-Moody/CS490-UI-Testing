@@ -1,8 +1,9 @@
 import time
-from locators import *
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
+
+from locators import *
 
 class BasePage(object):
     def __init__(self, driver):
@@ -85,6 +86,13 @@ class HomePage(BasePage):
         # Select User and submit
         self.driver.find_element(By.XPATH, "//button/div[text()='Client']").click()
         self.driver.find_element(*FormLocators.SUBMIT_BUTTON).click()
+
+    def exercise_results(self):
+        results = []
+        exercises = self.driver.find_elements(*HomePageLocators.EXERCISE_RESULT)
+        for exercise in exercises:
+            results.append(exercise.text)
+        return results
 
 class Dashboard(BasePage):
     def title_matches(self):

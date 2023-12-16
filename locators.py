@@ -18,13 +18,13 @@ class FormLocators(object):
 class HomePageLocators(object):
     REGISTER_BUTTON = (By.XPATH, "//button[text()='Register']")
     LOGIN_BUTTON = (By.XPATH, "//button[text()='Login']")
+    EXERCISE_SEARCH = (By.XPATH, "//label[text()='Find an exercise']/following-sibling::div[1]/input")
+    EXERCISE_RESULT = (By.XPATH, "//div[contains(@class, 'exerciseBox')]/h6")
 
 class DashboardLocators(object):
     DAILY_SURVEY_BUTTON = (By.XPATH, "//button[text()='Fill Survey']")
     GRAPH_VALUE = (By.CSS_SELECTOR, "span.recharts-tooltip-item-value")
 
-    #LATEST_WEIGHT = (By.XPATH, "//h6[text()='Weight Tracker']/following-sibling::div[1]//circle[last()]")
-    #LATEST_WEIGHT = (By.XPATH, "//h6[text()='Weight Tracker']/following-sibling::div[1]/div[1]")
     LATEST_WEIGHT = (By.XPATH, "//h6[text()='Weight Tracker']/following-sibling::div[1]")
     LATEST_WATER = (By.XPATH, "//h6[text()='Water Intake']/following-sibling::div[1]")
     LATEST_CALORIE = (By.XPATH, "//h6[text()='Calorie Tracker']/following-sibling::div[1]")
