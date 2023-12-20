@@ -38,4 +38,8 @@ class WorkoutPlanLocators(object):
     pass
 
 class CoachesLocators(object):
-    pass
+    REQUEST_BUTTON = (By.XPATH, "//button[text()='Request Coach']")
+    MESSAGE_BUTTON = (By.XPATH, "//button[text()='Message Coach']")
+    MORE_BUTTON = (By.XPATH, "//p[text()='More Options']")
+    FILTER_BUTTON = (By.XPATH, "//p[text()='Advanced Filters']")
+    ALERT = (By.CSS_SELECTOR, ".MuiAlert-message")

@@ -20,7 +20,7 @@ class HomeTest(unittest.TestCase):
         self.driver = webdriver.Firefox()
         self.driver.get(SITE_URL)
         self.home = pages.HomePage(self.driver)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
         self.addCleanup(self.driver.quit)
 
     def test_login(self):
@@ -99,7 +99,7 @@ class UserTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.get(SITE_URL)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
         home = pages.HomePage(self.driver)
         home.login("testuser123@gmail.com","password1!")
         self.dashboard = pages.Dashboard(self.driver)
@@ -122,6 +122,25 @@ class UserTest(unittest.TestCase):
 
     def test_request_coach(self):
         self.dashboard.goto_coaches()
+        # Request the first coach in the results
+        self.wait.until(
+            EC.element_to_be_clickable(CoachesLocators.MORE_BUTTON)
+        ).click()
+        self.wait.until(
+            EC.element_to_be_clickable(CoachesLocators.REQUEST_BUTTON)
+        ).click()
+        alert = self.wait.until(
+            EC.visibility_of_element_located(CoachesLocators.ALERT)
+        )
+        assert 'successfully' in alert.text, "Coach was not requested"
+        # Request the same coach again
+        self.wait.until(
+            EC.element_to_be_clickable(CoachesLocators.REQUEST_BUTTON)
+        ).click()
+        alert = self.wait.until(
+            EC.visibility_of_element_located(CoachesLocators.ALERT)
+        )
+        assert 'Failed' in alert.text, "User should not be able to request a second coach"
 
     def test_create_and_edit_workout_plan(self):
         self.dashboard.goto_plans()

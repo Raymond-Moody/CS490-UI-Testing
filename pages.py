@@ -8,7 +8,7 @@ from locators import *
 class BasePage(object):
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
 
     def clearForm(self, form):
         inputs = form.find_elements(By.XPATH, ".//input")
@@ -168,11 +168,9 @@ class Dashboard(BasePage):
             EC.element_to_be_clickable(DashboardLocators.PLANS_TAB)
         )
         link.click()
-        #self.driver.find_element(*DashboardLocators.PLANS_TAB).click()
     
     def goto_coaches(self):
         link = self.wait.until(
             EC.element_to_be_clickable(DashboardLocators.COACHES_TAB)
         )
         link.click()
-        #self.driver.find_element(*DashboardLocators.COACHES_TAB).click()
