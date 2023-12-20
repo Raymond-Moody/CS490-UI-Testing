@@ -66,7 +66,7 @@ class HomePage(BasePage):
         form = self.driver.find_element(By.XPATH, "//div[@role='dialog']")
         self.clearForm(form)
         self.driver.find_element(*FormLocators.TEXT_INPUT("Weight (lbs)")).send_keys(weight)
-        self.driver.find_element(*FormLocators.TEXT_INPUT("Height (cm)")).send_keys(height)
+        self.driver.find_element(*FormLocators.TEXT_INPUT("Height (in)")).send_keys(height)
         if goal is not None:
             self.driver.find_element(*FormLocators.SELECT_INPUT("Goal")).click()
             self.driver.find_element(*FormLocators.SELECT_OPTION("2")).click()
@@ -132,7 +132,7 @@ class Dashboard(BasePage):
 
     def fill_daily_survey(self, weight, water, calories, mood):
         self.driver.find_element(*FormLocators.TEXT_INPUT("Weight")).send_keys(weight)
-        self.driver.find_element(*FormLocators.TEXT_INPUT("Water Amount (ml)")).send_keys(water)
+        self.driver.find_element(*FormLocators.TEXT_INPUT("Water Amount (Oz)")).send_keys(water)
         self.driver.find_element(*FormLocators.TEXT_INPUT("Calorie Amount")).send_keys(calories)
         self.driver.find_element(By.XPATH, "//button[text()='{}']".format(mood)).click()
         self.driver.find_element(*FormLocators.SUBMIT_BUTTON).click()

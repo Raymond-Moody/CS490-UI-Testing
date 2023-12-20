@@ -1,5 +1,4 @@
 import os
-import sys
 import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,7 +9,7 @@ import pages
 from locators import *
 
 SITE_URL = "http://localhost:3000"
-DB_PASSWORD = sys.argv[1]
+DB_PASSWORD = os.environ['DB_PASSWORD'] 
 
 def clean_db():
     os.system("mysql --user=root --password={} < clean_db.sql".format(DB_PASSWORD))
@@ -48,12 +47,10 @@ class HomeTest(unittest.TestCase):
         self.wait.until(
             EC.invisibility_of_element_located(FormLocators.ROOT)
         )
-        self.home.login("testuser@email.com", "abc123$")
         self.wait.until(
             EC.title_contains('Dashboard')
         )
         dashboard = pages.Dashboard(self.driver)
-        # We reached 'FitConnect - User Dashboard' successfully -> we registered and logged in successfully
         assert dashboard.title_matches(), "Failed to reach the dashboard"
 
     def test_coach_registration_login(self):
@@ -87,7 +84,7 @@ class UserDashboardTest(unittest.TestCase):
         self.driver.get(SITE_URL)
         self.wait = WebDriverWait(self.driver, 10)
         home = pages.HomePage(self.driver)
-        home.login("testuser123@email.com","password1!")
+        home.login("testuser123@gmail.com","password1!")
         self.dashboard = pages.Dashboard(self.driver)
         self.addCleanup(self.driver.quit)
 
@@ -108,5 +105,4 @@ class UserDashboardTest(unittest.TestCase):
         clean_db()
 
 if __name__ == "__main__":
-    DB_PASSWORD = sys.argv.pop()
     unittest.main()
