@@ -23,6 +23,14 @@ class HomeTest(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, 10)
         self.addCleanup(self.driver.quit)
 
+    def test_login(self):
+        self.home.login('testuser123@gmail.com', 'password1!')
+        self.wait.until(
+            EC.title_contains('Dashboard')
+        )
+        dashboard = pages.Dashboard(self.driver)
+        assert dashboard.title_matches(), "Failed to log in"
+
     def test_registration_bad_inputs(self):
         self.home.click_register_button()
         self.home.fill_registration_form()
@@ -39,22 +47,24 @@ class HomeTest(unittest.TestCase):
         assert "Password must contain" in self.driver.page_source, "No error displayed for invalid password"
         """
 
-    def test_user_registeration_login(self):
+    def test_user_registeration(self):
         assert self.home.title_matches(), "Did not reach homepage"
         self.home.register_user('testuser@email.com', 'TestF', 'TestL', 'male', '01012000', 'abc123$', 'abc123$', '180', '180', '2')
 
-        # Log in after user is created
-        self.wait.until(
-            EC.invisibility_of_element_located(FormLocators.ROOT)
-        )
         self.wait.until(
             EC.title_contains('Dashboard')
         )
         dashboard = pages.Dashboard(self.driver)
         assert dashboard.title_matches(), "Failed to reach the dashboard"
 
-    def test_coach_registration_login(self):
-        assert True
+    def test_coach_registration(self):
+        self.home.register_coach('testuser@email.com', 'TestF', 'TestL', 'male', '01012000', 'abc123$', 'abc123$', '180', '180', '2', '3', 'bio', 'Novice', '123')
+
+        self.wait.until(
+            EC.title_contains('Dashboard')
+        )
+        dashboard = pages.Dashboard(self.driver)
+        assert dashboard.title_matches(), "Failed to reach the dashboard"
 
     def test_exercise_bank(self):
         # Scroll to exercise bank

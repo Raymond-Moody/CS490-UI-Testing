@@ -3,6 +3,7 @@ use fitness;
 DELETE FROM user_credentials WHERE user_id IN (SELECT user_id from user where email='testuser@email.com');
 DELETE FROM token WHERE user_id IN (SELECT user_id from user where email='testuser@email.com'); 
 DELETE FROM physical_health_log WHERE user_id IN (SELECT user_id from user where email='testuser@email.com');
+DELETE FROM become_coach_request WHERE user_id IN (SELECT user_id from user where email='testuser@email.com');
 DELETE FROM user WHERE email = 'testuser@email.com';
 
 -- Reset Test user

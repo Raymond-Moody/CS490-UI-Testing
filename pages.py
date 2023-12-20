@@ -69,11 +69,22 @@ class HomePage(BasePage):
         self.driver.find_element(*FormLocators.TEXT_INPUT("Height (in)")).send_keys(height)
         if goal is not None:
             self.driver.find_element(*FormLocators.SELECT_INPUT("Goal")).click()
-            self.driver.find_element(*FormLocators.SELECT_OPTION("2")).click()
+            self.driver.find_element(*FormLocators.SELECT_OPTION(goal)).click()
             self.wait.until(
                 EC.invisibility_of_element_located((By.ID, "menu-"))
             )
         self.driver.find_element(*FormLocators.NEXT_BUTTON).click()
+
+    def fill_coach_survey(self, specialization=None, bio='', experience='', cost=''):
+        if specialization is not None:
+            self.driver.find_element(*FormLocators.SELECT_INPUT('Specialization')).click()
+            self.driver.find_element(*FormLocators.SELECT_OPTION(specialization)).click()
+            self.wait.until(
+                EC.invisibility_of_element_located((By.ID, "menu-"))
+            )
+        self.driver.find_element(By.CSS_SELECTOR, 'textarea').send_keys(bio)
+        self.driver.find_element(By.XPATH, "//button[text()='{}']".format(experience)).click()
+        self.driver.find_element(*FormLocators.TEXT_INPUT('Cost')).send_keys(cost)
 
     #Full registration flow
     def register_user(self, email='', first_name='', last_name='', gender=None, date='', password='', repeat_password=None, height='', weight='', goal=None):
@@ -85,6 +96,21 @@ class HomePage(BasePage):
 
         # Select User and submit
         self.driver.find_element(By.XPATH, "//button/div[text()='Client']").click()
+        self.driver.find_element(*FormLocators.SUBMIT_BUTTON).click()
+
+    def register_coach(self, email='', first_name='', last_name='', gender=None, date='', password='', repeat_password=None, height='', weight='', goal=None,\
+            specialization='', bio='', experience='', cost=''):
+        self.click_register_button()
+        # Fill out first page of registration form
+        self.fill_registration_form(email, first_name, last_name, gender, date, password, repeat_password)
+        # Fill out Initial Survey
+        self.fill_initial_survey(height, weight, goal)
+
+        #Select Coach
+        self.driver.find_element(By.XPATH, "//button/div[text()='Coach']").click()
+        self.driver.find_element(*FormLocators.NEXT_BUTTON).click()
+        # Fill out the coach survey
+        self.fill_coach_survey(specialization, bio, experience, cost)
         self.driver.find_element(*FormLocators.SUBMIT_BUTTON).click()
 
     def exercise_results(self):
