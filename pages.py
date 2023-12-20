@@ -220,3 +220,33 @@ class CoachesPage(BasePage):
             if cost not in coach_cost.text:
                 return False
         return True
+
+class PlansPage(BasePage):
+    def add_exercise(self, name):
+        self.driver.find_element(*WorkoutPlanLocators.ADD_EXERCISE).click()
+        self.driver.find_element(*FormLocators.TEXT_INPUT('Find an exercise')).send_keys(name)
+        self.wait.until(
+            EC.element_to_be_clickable(HomePageLocators.EXERCISE_RESULT)
+        ).click()
+        self.wait.until(
+            EC.element_to_be_clickable(WorkoutPlanLocators.CONFIRM_EXERCISE)
+        ).click()
+        for element in self.driver.find_elements(By.CSS_SELECTOR, "input[type='number']"):
+            element.send_keys('10')
+        self.driver.find_element(*WorkoutPlanLocators.CONFIRM_EXERCISE_DATA).click()
+
+    def plan_list_contains(self, plans, title):
+        for plan in plans:
+            if plan.text == title:
+                return True
+        return False
+
+    def select_plan(self, title):
+        self.driver.find_element(*WorkoutPlanLocators.PLAN_IN_LIST(title)).click()
+
+    def selected_plan_contains(self, exercise_name):
+        exercises = self.driver.find_elements(*WorkoutPlanLocators.EXERCISE_IN_PLAN)
+        for exercise in exercises:
+            if exercise.text == exercise_name:
+                return True
+        return False

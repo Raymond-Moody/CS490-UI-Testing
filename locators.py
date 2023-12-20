@@ -35,7 +35,19 @@ class DashboardLocators(object):
     PLANS_TAB = (By.CSS_SELECTOR, "a[href='/c/workoutplan'] > div")
 
 class WorkoutPlanLocators(object):
-    pass
+    CREATE_PLAN = (By.XPATH, "//button[text()='Create New Plan']")
+    SAVE_PLAN = (By.XPATH, "//button[text()='Save Plan']")
+    EDIT_PLAN = (By.XPATH, "//button[text()='Edit Plan']")
+    UPDATE_PLAN = (By.XPATH, "//button[text()='Update Plan']")
+    ADD_EXERCISE = (By.XPATH, "//button/h6[text()='Add Exercise']")
+    CONFIRM_EXERCISE = (By.XPATH, "//button[text()='Add Exercise']")
+    CONFIRM_EXERCISE_DATA = (By.CSS_SELECTOR, "svg[data-testid='CheckIcon']")
+    PLAN_LIST = (By.XPATH, "//h6[text()='Your Workout plans']/following-sibling::ul[1]/div")
+    #PLAN_IN_LIST = (By.XPATH, "//h6[text()='Your Workout Plans']/following-sibling::ul[1]/div")
+    EXERCISE_IN_PLAN = (By.XPATH, "//div[contains(@class, 'ReadWorkoutPlan-toolbar')]/h6")
+
+    def PLAN_IN_LIST(title):
+        return (By.XPATH, "//div[text()='{}']".format(title))
 
 class CoachesLocators(object):
     REQUEST_BUTTON = (By.XPATH, "//button[text()='Request Coach']")

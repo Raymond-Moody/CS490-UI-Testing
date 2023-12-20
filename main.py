@@ -1,3 +1,4 @@
+import time
 import os
 import unittest
 from selenium import webdriver
@@ -10,6 +11,7 @@ from locators import *
 
 SITE_URL = "http://localhost:3000"
 DB_PASSWORD = os.environ['DB_PASSWORD'] 
+'henryeugeneprice34@outlook.com'
 
 def clean_db():
     os.system(f"mysql --user=root --password={DB_PASSWORD} < clean_db.sql")
@@ -154,6 +156,28 @@ class UserTest(unittest.TestCase):
 
     def test_create_and_edit_workout_plan(self):
         self.dashboard.goto_plans()
+        plan_page = pages.PlansPage(self.driver)
+        # Create Plan
+        self.driver.find_element(*WorkoutPlanLocators.CREATE_PLAN).click()
+        self.wait.until(
+            EC.visibility_of_element_located(FormLocators.TEXT_INPUT('Plan Title'))
+        ).send_keys('abc')
+        plan_page.add_exercise('Barbell Curl')
+        self.driver.find_element(*WorkoutPlanLocators.SAVE_PLAN).click()
+        plans = self.driver.find_elements(*WorkoutPlanLocators.PLAN_LIST)
+        assert plan_page.plan_list_contains(plans, 'abc'), "Plan was not made"
+        plan_page.select_plan('abc')
+        assert plan_page.selected_plan_contains('Barbell Curl'), "Plan did not include an exercise"
+
+        # Edit Plan
+        print("About to edit plan")
+        plan_page.select_plan('abc')
+        self.driver.find_element(*WorkoutPlanLocators.EDIT_PLAN).click()
+        plan_page.add_exercise('Crunches')
+        self.driver.find_element(*WorkoutPlanLocators.UPDATE_PLAN).click()
+        time.sleep(0.5)
+        plan_page.select_plan('abc')
+        assert plan_page.selected_plan_contains('Crunches'), "Plan did not add exercise"
 
     def test_create_and_view_workout_logs(self):
         # Probably has to be merged into creating plans unless I want to add more dummy data
