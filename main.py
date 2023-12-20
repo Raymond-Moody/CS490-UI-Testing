@@ -12,7 +12,7 @@ SITE_URL = "http://localhost:3000"
 DB_PASSWORD = os.environ['DB_PASSWORD'] 
 
 def clean_db():
-    os.system("mysql --user=root --password={} < clean_db.sql".format(DB_PASSWORD))
+    os.system(f"mysql --user=root --password={DB_PASSWORD} < clean_db.sql")
 
 class HomeTest(unittest.TestCase):
 
@@ -119,6 +119,16 @@ class UserTest(unittest.TestCase):
         
     def test_search_coaches(self):
         self.dashboard.goto_coaches()
+        self.driver.find_element(*CoachesLocators.FILTER_BUTTON).click()
+        coach_page = pages.CoachesPage(self.driver)
+        coach_page.filter(exp='2', goal='Increase Stamina')
+        results = coach_page.results()
+        assert coach_page.experience_matches('Intermediate', results), "Returned coach had wrong experience level"
+        assert coach_page.goal_matches('Increase Stamina', results), "Returned coach had wrong specialization"
+        coach_page.filter(min_cost='248.50', max_cost='248.50')
+        assert coach_page.cost_matches('248.50', coach_page.results()), "Returned coach had wrong cost"
+        coach_page.filter(name='abcdef')
+        assert not coach_page.results(), "Should not have found any coaches with name abcdef"
 
     def test_request_coach(self):
         self.dashboard.goto_coaches()
@@ -144,6 +154,13 @@ class UserTest(unittest.TestCase):
 
     def test_create_and_edit_workout_plan(self):
         self.dashboard.goto_plans()
+
+    def test_create_and_view_workout_logs(self):
+        # Probably has to be merged into creating plans unless I want to add more dummy data
+        pass
+
+    def test_send_and_view_messages(self):
+        pass
 
     def tearDown(self):
         self.driver.quit()

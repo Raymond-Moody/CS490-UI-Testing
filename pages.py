@@ -174,3 +174,49 @@ class Dashboard(BasePage):
             EC.element_to_be_clickable(DashboardLocators.COACHES_TAB)
         )
         link.click()
+
+class CoachesPage(BasePage):
+    def results(self):
+        coaches = self.driver.find_elements(*CoachesLocators.COACH_PROFILE)
+        return coaches
+
+    def filter(self, name='', exp='', goal='', min_cost='', max_cost=''):
+        if name:
+            self.driver.find_element(*FormLocators.TEXT_INPUT("Search Coaches")).send_keys(name)
+        if exp:
+            self.driver.find_element(By.XPATH, "//div[text()='Any Experience']").click()
+            self.driver.find_element(*FormLocators.SELECT_OPTION(exp)).click()
+            self.wait.until(
+                EC.invisibility_of_element_located((By.CSS_SELECTOR, "ul[role='listbox']"))
+            )
+        if goal:
+            self.driver.find_element(By.XPATH, "//div[text()='Any Goal']").click()
+            self.driver.find_element(*FormLocators.SELECT_OPTION(goal)).click()
+            self.wait.until(
+                EC.invisibility_of_element_located((By.CSS_SELECTOR, "ul[role='listbox']"))
+            )
+        if min_cost:
+            self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='0']").send_keys(min_cost)
+        if max_cost:
+            self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='250']").send_keys(max_cost)
+
+    def experience_matches(self, exp, coaches):
+        for coach in coaches:
+            experience = coach.find_element(By.XPATH, ".//p[contains(., 'Experience')]") 
+            if exp not in experience.text:
+                return False
+        return True
+
+    def goal_matches(self, goal, coaches):
+        for coach in coaches:
+            coach_goal = coach.find_element(By.XPATH, ".//p[contains(., 'Specialization')]") 
+            if goal not in coach_goal.text:
+                return False
+        return True
+
+    def cost_matches(self, cost, coaches):
+        for coach in coaches:
+            coach_cost = coach.find_element(By.XPATH, ".//p[contains(., 'Price')]") 
+            if cost not in coach_cost.text:
+                return False
+        return True
