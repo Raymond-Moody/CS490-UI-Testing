@@ -30,5 +30,12 @@ class DashboardLocators(object):
     LATEST_CALORIE = (By.XPATH, "//h6[text()='Calorie Tracker']/following-sibling::div[1]")
     LATEST_MOOD = (By.XPATH, "//h6[text()='Mood Tracker']/following-sibling::div[1]")
 
+    HOME_TAB = (By.CSS_SELECTOR, "a[href='/c/dashboard'] > div")
+    COACHES_TAB = (By.CSS_SELECTOR, "a[href='/c/coaches'] > div")
+    PLANS_TAB = (By.CSS_SELECTOR, "a[href='/c/workoutplan'] > div")
+
 class WorkoutPlanLocators(object):
+    pass
+
+class CoachesLocators(object):
     pass

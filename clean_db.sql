@@ -12,3 +12,4 @@ DELETE FROM mental_health_log WHERE user_id IN (SELECT user_id from user where e
 DELETE FROM calorie_log WHERE user_id IN (SELECT user_id from user where email='testuser123@gmail.com');
 DELETE FROM water_log WHERE user_id IN (SELECT user_id from user where email='testuser123@gmail.com');
 DELETE FROM workout_log WHERE user_id IN (SELECT user_id from user where email='testuser123@gmail.com');
+UPDATE user SET has_coach=FALSE, hired_coach_id=NULL WHERE email='testuser123@gmail.com';

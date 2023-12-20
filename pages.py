@@ -15,7 +15,7 @@ class BasePage(object):
         for input_field in inputs:
             try:
                 input_field.clear()
-            except:
+            except Exception:
                 # Input is probably not editable, doesn't need to be cleared anyway
                 continue
 
@@ -162,3 +162,17 @@ class Dashboard(BasePage):
         self.driver.find_element(*FormLocators.TEXT_INPUT("Calorie Amount")).send_keys(calories)
         self.driver.find_element(By.XPATH, "//button[text()='{}']".format(mood)).click()
         self.driver.find_element(*FormLocators.SUBMIT_BUTTON).click()
+
+    def goto_plans(self):
+        link = self.wait.until(
+            EC.element_to_be_clickable(DashboardLocators.PLANS_TAB)
+        )
+        link.click()
+        #self.driver.find_element(*DashboardLocators.PLANS_TAB).click()
+    
+    def goto_coaches(self):
+        link = self.wait.until(
+            EC.element_to_be_clickable(DashboardLocators.COACHES_TAB)
+        )
+        link.click()
+        #self.driver.find_element(*DashboardLocators.COACHES_TAB).click()

@@ -60,6 +60,13 @@ class HomeTest(unittest.TestCase):
     def test_coach_registration(self):
         self.home.register_coach('testuser@email.com', 'TestF', 'TestL', 'male', '01012000', 'abc123$', 'abc123$', '180', '180', '2', '3', 'bio', 'Novice', '123')
 
+        #TEMP
+        self.wait.until(
+            EC.invisibility_of_element_located(FormLocators.ROOT)
+        )
+        self.home.login('testuser123@gmail.com', 'password1!')
+        #ENDTEMP
+
         self.wait.until(
             EC.title_contains('Dashboard')
         )
@@ -88,7 +95,7 @@ class HomeTest(unittest.TestCase):
         self.driver.quit()
         clean_db()
 
-class UserDashboardTest(unittest.TestCase):
+class UserTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.get(SITE_URL)
@@ -110,6 +117,15 @@ class UserDashboardTest(unittest.TestCase):
         assert self.dashboard.latest_calorie_is('2300'), "New calorie was not graphed"
         assert self.dashboard.latest_mood_is('0'), "New mood was not graphed"
         
+    def test_search_coaches(self):
+        self.dashboard.goto_coaches()
+
+    def test_request_coach(self):
+        self.dashboard.goto_coaches()
+
+    def test_create_and_edit_workout_plan(self):
+        self.dashboard.goto_plans()
+
     def tearDown(self):
         self.driver.quit()
         clean_db()
