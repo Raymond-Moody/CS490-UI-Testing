@@ -221,9 +221,13 @@ class CoachesPage(BasePage):
                 EC.invisibility_of_element_located((By.CSS_SELECTOR, "ul[role='listbox']"))
             )
         if min_cost:
-            self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='0']").send_keys(min_cost)
+            min_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='0']")
+            min_input.clear()
+            min_input.send_keys(min_cost)
         if max_cost:
-            self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='250']").send_keys(max_cost)
+            max_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='number'][value='250']")
+            max_input.clear()
+            max_input.send_keys(max_cost)
 
     def experience_matches(self, exp, coaches):
         for coach in coaches:
