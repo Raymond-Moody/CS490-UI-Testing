@@ -25,32 +25,12 @@ class HomeTest(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, 5)
         self.addCleanup(self.driver.quit)
 
-    '''
-    Redundant due to registration test
-    def test_login(self):
-        self.home.login('testuser123@gmail.com', 'password1!')
-        self.wait.until(
-            EC.title_contains('Dashboard')
-        )
-        dashboard = pages.Dashboard(self.driver)
-        assert dashboard.title_matches(), "Failed to log in"
-    '''
-
     def test_registration_bad_inputs(self):
         self.home.click_register_button()
         self.home.fill_registration_form()
         assert "Please fill all the required (*) fields" in self.driver.page_source, "No error displayed for empty fields"
         self.home.fill_registration_form('testuser@email.com', 'testF', 'testL', 'female', '01012000', 'abc123$', 'abc123')
         assert "do not match" in self.driver.page_source, "No error displayed for mismatched passwords"
-
-        """
-        self.home.fill_registration_form('testuser@', 'testF', 'testL', 'female', '01012000', 'abc123$', 'abc123$')
-        # Placeholder error message expected
-        assert "Please enter a valid email" in self.driver.page_source, "No error displayed for invalid email"
-        self.home.fill_registration_form('testuser@email.com', 'testF', 'testL', 'female', '01012000', 'abc123', 'abc123')
-        # Placeholder error message expected
-        assert "Password must contain" in self.driver.page_source, "No error displayed for invalid password"
-        """
 
     def test_user_registeration(self):
         assert self.home.title_matches(), "Did not reach homepage"
