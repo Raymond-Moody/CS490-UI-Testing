@@ -190,6 +190,12 @@ class Dashboard(BasePage):
         )
         link.click()
 
+    def goto_home(self):
+        link = self.wait.until(
+            EC.element_to_be_clickable(DashboardLocators.HOME_TAB)
+        )
+        link.click()
+
     def logout(self):
         self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='account of current user']").click()
         self.driver.find_element(By.XPATH, "//p[text()='Logout']").click()
@@ -256,6 +262,7 @@ class PlansPage(BasePage):
 
     def plan_list_contains(self, plans, title):
         for plan in plans:
+            print(plan.text)
             if plan.text == title:
                 return True
         return False

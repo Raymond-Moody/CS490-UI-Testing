@@ -58,3 +58,8 @@ class CoachesLocators(object):
     FILTER_BUTTON = (By.XPATH, "//p[text()='Advanced Filters']")
     ALERT = (By.CSS_SELECTOR, ".MuiAlert-message")
     COACH_PROFILE = (By.CSS_SELECTOR, ".MuiCard-root")
+
+class ClientsLocators(object):
+    TEST_USER = (By.XPATH, "//button//h2[contains(text(), 'Test')]")
+    VIEW_INFO = (By.XPATH, "//button[text()='View Client Info']")
+    CLIENT_WORKOUTS = (By.XPATH, "//button[text()='Client Workout Info']")

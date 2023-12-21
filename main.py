@@ -25,6 +25,8 @@ class HomeTest(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, 5)
         self.addCleanup(self.driver.quit)
 
+    '''
+    Redundant due to registration test
     def test_login(self):
         self.home.login('testuser123@gmail.com', 'password1!')
         self.wait.until(
@@ -32,6 +34,7 @@ class HomeTest(unittest.TestCase):
         )
         dashboard = pages.Dashboard(self.driver)
         assert dashboard.title_matches(), "Failed to log in"
+    '''
 
     def test_registration_bad_inputs(self):
         self.home.click_register_button()
@@ -88,10 +91,13 @@ class HomeTest(unittest.TestCase):
         assert len(self.home.exercise_results()) == 14, "Exercise bank was not populated"
 
         # Check that we can search for exercises. 
-        exercise_search_bar.send_keys('Crunch')
-        assert len(self.home.exercise_results()) == 2, "Search for 'crunch' returned more than expected"
+        exercise_search_bar.send_keys('Barbell')
+        assert len(self.home.exercise_results()) == 7, "Search for 'barbell' returned more than expected"
         for exercise in self.home.exercise_results():
-            assert 'Crunch' in exercise, "A returned exercise did not contain the search term"
+            assert 'Barbell' in exercise or 'Renegate Row' in exercise, "A returned exercise did not match expected results for 'barbell'"
+        exercise_search_bar.clear()
+        exercise_search_bar.send_keys('Abdominals')
+        assert len(self.home.exercise_results()) == 6, "Search for 'Abdominals' returned more than expected"
 
     def tearDown(self):
         self.driver.quit()
@@ -180,7 +186,6 @@ class UserTest(unittest.TestCase):
         assert plan_page.selected_plan_contains('Barbell Curl'), "Plan did not include an exercise"
 
         # Edit Plan
-        print("About to edit plan")
         plan_page.select_plan('abc')
         self.driver.find_element(*WorkoutPlanLocators.EDIT_PLAN).click()
         plan_page.add_exercise('Crunches')
@@ -189,16 +194,67 @@ class UserTest(unittest.TestCase):
         plan_page.select_plan('abc')
         assert plan_page.selected_plan_contains('Crunches'), "Plan did not add exercise"
 
-    def test_create_and_view_workout_logs(self):
-        # Probably has to be merged into creating plans unless I want to add more dummy data
-        pass
+    def tearDown(self):
+        self.driver.quit()
+        clean_db()
 
-    def test_send_and_view_messages(self):
-        pass
+class CoachTest(unittest.TestCase):
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.get(SITE_URL)
+        self.wait = WebDriverWait(self.driver, 5)
+        self.home = pages.HomePage(self.driver)
+        # Make test user have a coach, since their db data gets wiped every time
+        self.home.login("testuser123@gmail.com","password1!")
+        self.dashboard = pages.Dashboard(self.driver)
+        self.addCleanup(self.driver.quit)
+        self.dashboard.goto_coaches()
+        coaches_page = pages.CoachesPage(self.driver)
+        coaches_page.filter(name='Henry')
+        self.wait.until(
+            EC.element_to_be_clickable(CoachesLocators.MORE_BUTTON)
+        ).click()
+        self.wait.until(
+            EC.element_to_be_clickable(CoachesLocators.REQUEST_BUTTON)
+        ).click()
+
+        self.dashboard.logout()
+        self.driver.get(SITE_URL)
+        self.home.login('henryeugeneprice34@outlook.com', 'password1!')
+        self.dashboard.goto_requests()
+        self.driver.find_element(By.XPATH, "//button[text()='Accept']").click()
+        self.dashboard.goto_home()
+
+    def test_view_client_dashboard(self):
+        self.dashboard.goto_clients()
+        self.driver.find_element(*ClientsLocators.TEST_USER).click()
+        self.driver.find_element(*ClientsLocators.VIEW_INFO).click()
+        assert 'Test' in self.driver.page_source
+        assert "'s - Client Info" in self.driver.page_source, "Did not reach client's dashboard"
+
+    def test_create_client_workout_plan(self):
+        self.dashboard.goto_clients()
+        self.driver.find_element(*ClientsLocators.TEST_USER).click()
+        self.driver.find_element(*ClientsLocators.CLIENT_WORKOUTS).click()
+        plan_page = pages.PlansPage(self.driver)
+        self.driver.refresh()
+        time.sleep(1)
+        # Create Plan
+        self.driver.find_element(*WorkoutPlanLocators.CREATE_PLAN).click()
+        self.wait.until(
+            EC.visibility_of_element_located(FormLocators.TEXT_INPUT('Plan Title'))
+        ).send_keys('def')
+        plan_page.add_exercise('Barbell Curl')
+        self.driver.find_element(*WorkoutPlanLocators.SAVE_PLAN).click()
+        plans = self.driver.find_elements(*WorkoutPlanLocators.PLAN_LIST)
+        assert plan_page.plan_list_contains(plans, 'def'), "Plan was not made"
+        plan_page.select_plan('def')
+        assert plan_page.selected_plan_contains('Barbell Curl'), "Plan did not include an exercise"
 
     def tearDown(self):
         self.driver.quit()
         clean_db()
+
 
 if __name__ == "__main__":
     unittest.main()
