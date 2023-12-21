@@ -262,7 +262,6 @@ class PlansPage(BasePage):
 
     def plan_list_contains(self, plans, title):
         for plan in plans:
-            print(plan.text)
             if plan.text == title:
                 return True
         return False
