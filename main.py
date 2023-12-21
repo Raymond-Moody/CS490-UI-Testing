@@ -45,12 +45,10 @@ class HomeTest(unittest.TestCase):
     def test_coach_registration(self):
         self.home.register_coach('testuser@email.com', 'TestF', 'TestL', 'male', '01012000', 'abc123$', 'abc123$', '180', '180', '2', '3', 'bio', 'Novice', '123')
 
-        #TEMP
         self.wait.until(
             EC.invisibility_of_element_located(FormLocators.ROOT)
         )
         self.home.login('testuser123@gmail.com', 'password1!')
-        #ENDTEMP
 
         self.wait.until(
             EC.title_contains('Dashboard')
