@@ -33,6 +33,8 @@ class DashboardLocators(object):
     HOME_TAB = (By.CSS_SELECTOR, "a[href='/c/dashboard'] > div")
     COACHES_TAB = (By.CSS_SELECTOR, "a[href='/c/coaches'] > div")
     PLANS_TAB = (By.CSS_SELECTOR, "a[href='/c/workoutplan'] > div")
+    REQUESTS_TAB = (By.CSS_SELECTOR, "a[href='/c/my-requests'] > div")
+    CLIENTS_TAB = (By.CSS_SELECTOR, "a[href='/c/my-clients'] > div")
 
 class WorkoutPlanLocators(object):
     CREATE_PLAN = (By.XPATH, "//button[text()='Create New Plan']")

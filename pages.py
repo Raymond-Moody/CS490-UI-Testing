@@ -27,7 +27,10 @@ class HomePage(BasePage):
         self.driver.find_element(*HomePageLocators.REGISTER_BUTTON).click()
 
     def click_login_button(self):
-        self.driver.find_element(*HomePageLocators.LOGIN_BUTTON).click()
+        login = self.wait.until(
+            EC.element_to_be_clickable(HomePageLocators.LOGIN_BUTTON)
+        )
+        login.click()
 
     # Make a function to login for use in other tests
     def login(self, email, password):
@@ -174,6 +177,22 @@ class Dashboard(BasePage):
             EC.element_to_be_clickable(DashboardLocators.COACHES_TAB)
         )
         link.click()
+
+    def goto_requests(self):
+        link = self.wait.until(
+            EC.element_to_be_clickable(DashboardLocators.REQUESTS_TAB)
+        )
+        link.click()
+
+    def goto_clients(self):
+        link = self.wait.until(
+            EC.element_to_be_clickable(DashboardLocators.CLIENTS_TAB)
+        )
+        link.click()
+
+    def logout(self):
+        self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='account of current user']").click()
+        self.driver.find_element(By.XPATH, "//p[text()='Logout']").click()
 
 class CoachesPage(BasePage):
     def results(self):

@@ -11,7 +11,7 @@ from locators import *
 
 SITE_URL = "http://localhost:3000"
 DB_PASSWORD = os.environ['DB_PASSWORD'] 
-'henryeugeneprice34@outlook.com'
+
 
 def clean_db():
     os.system(f"mysql --user=root --password={DB_PASSWORD} < clean_db.sql")
@@ -102,8 +102,8 @@ class UserTest(unittest.TestCase):
         self.driver = webdriver.Firefox()
         self.driver.get(SITE_URL)
         self.wait = WebDriverWait(self.driver, 5)
-        home = pages.HomePage(self.driver)
-        home.login("testuser123@gmail.com","password1!")
+        self.home = pages.HomePage(self.driver)
+        self.home.login("testuser123@gmail.com","password1!")
         self.dashboard = pages.Dashboard(self.driver)
         self.addCleanup(self.driver.quit)
 
@@ -132,7 +132,7 @@ class UserTest(unittest.TestCase):
         coach_page.filter(name='abcdef')
         assert not coach_page.results(), "Should not have found any coaches with name abcdef"
 
-    def test_request_coach(self):
+    def test_request_coach_and_accept_client(self):
         self.dashboard.goto_coaches()
         # Request the first coach in the results
         self.wait.until(
@@ -153,6 +153,16 @@ class UserTest(unittest.TestCase):
             EC.visibility_of_element_located(CoachesLocators.ALERT)
         )
         assert 'Failed' in alert.text, "User should not be able to request a second coach"
+
+        # Test that a coach can accept a request
+        self.dashboard.logout()
+        self.driver.get(SITE_URL)
+        self.home.login('henryeugeneprice34@outlook.com', 'password1!')
+        self.dashboard.goto_requests()
+        assert 'Test' in self.driver.page_source and 'User' in self.driver.page_source, "Client request did not go through"
+        self.driver.find_element(By.XPATH, "//button[text()='Accept']").click()
+        self.dashboard.goto_clients()
+        assert 'testuser123@gmail.com' in self.driver.page_source, "Test user did not show up in clients tab"
 
     def test_create_and_edit_workout_plan(self):
         self.dashboard.goto_plans()
